@@ -1,12 +1,14 @@
+import { Paper } from "@mui/material";
+
 function BrowsePane() {
-    return (
-      <div>
-        BrowsePane
-      </div>
-  
-  
-  
-    );
-  }
-  
-  export default BrowsePane;
+  return (
+    <div>
+      <Paper>BrowsePane</Paper>
+    </div>
+
+
+
+  );
+}
+
+export default BrowsePane;

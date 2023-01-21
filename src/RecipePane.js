@@ -1,7 +1,9 @@
+import { Paper } from "@mui/material";
+
 function RecipePane() {
     return (
       <div>
-        RecipePane
+        <Paper>RecipePane</Paper>
       </div>
   
   
