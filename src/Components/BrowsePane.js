@@ -1,9 +1,23 @@
-import { Paper } from "@mui/material";
+import { Paper, Grid } from "@mui/material";
+import CardItem from './CardItem';
 
 function BrowsePane() {
   return (
     <div>
-      <Paper>BrowsePane</Paper>
+      <Paper>
+        BrowsePane
+        {/* <Grid container spacing={3} justifyContent="center" className="BrowseCards">
+          <Grid item xs={4}>
+            <CardItem />
+          </Grid>
+          <Grid item xs={4}>
+            <CardItem />
+          </Grid>
+          <Grid item xs={4}>
+            <CardItem />
+          </Grid>
+        </Grid> */}
+      </Paper>
     </div>
 
 

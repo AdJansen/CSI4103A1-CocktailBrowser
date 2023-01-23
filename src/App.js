@@ -4,7 +4,7 @@ import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import FunctionPane from './Components/FunctionPane';
 import BrowsePane from './Components/BrowsePane';
-import RecipePane from './RecipePane';
+import RecipePane from './Components/RecipePane';
 import './App.css';
 
 const PaperCell = (props) => {
