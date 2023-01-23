@@ -2,8 +2,8 @@
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
-import FunctionPane from './FunctionPane';
-import BrowsePane from './BrowsePane';
+import FunctionPane from './Components/FunctionPane';
+import BrowsePane from './Components/BrowsePane';
 import RecipePane from './RecipePane';
 import './App.css';
 
