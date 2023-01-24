@@ -32,7 +32,7 @@ function FunctionPane({ setResult }) {
     <ThemeProvider theme={theme}>
       <div>
         <Paper elevation={2} className="FunctionPaper">
-          <Logo />
+          <Logo role="img" alt="logo"/>
           <p>
             <TextField fullWidth id="SearchText" label="What will you be having?" variant='outlined' value={value} onChange={handleChange} />
           </p>

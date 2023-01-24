@@ -1,0 +1,364 @@
+~~~~~~~~~~~~~~~~~ App.js ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+// import logo from './Undiluted - Cocktail Finder Logo.svg';
+import Grid from '@mui/material/Grid';
+import FunctionPane from './Components/FunctionPane';
+import BrowsePane from './Components/BrowsePane';
+import RecipePane from './Components/RecipePane';
+import React, { useState } from "react";
+import './App.css';
+
+//App.js is the main component that holds all the other components together
+//It is the parent component of all the other components
+//It consists of 3 main sub-components: FunctionPane, BrowsePane, and RecipePane
+//It also holds some master-state variables that are passed down to the sub-components
+
+/*
+Software Sources/Guides: 
+  MaterialUI - MIT License - mui.com, 
+  @Brian Design on Youtube - React React Website Tutorial - Beginner React JS Project Fully Responsive - For Inspiration and some guidance on functionality
+  https://www.copycat.dev/blog/react-fetch/ - For Examples of React Fetch
+  https://codingbeautydev.com/blog/react-link-image  - From this blog I learned how to link images to a page
+  Github Copilot - Paid Service, provided free with university Email - Various autocomplete suggestions 
+  */
+//API Source: TheCocktailDB - Informal Unlimited Usage Potentail Paid Option for high bandwidth - thecocktaildb.com
+
+
+
+
+function App() {
+  const [result, setResult] = useState([])
+  const [recipe, imgClick] = useState([])
+
+
+  const setJsonResult = (result) => { //This function is used to set the result state variable to the result of the API call (The function is passed down to the FunctionPane)
+    if (result === null) { //Catches the possibility of a null result from the API to prevent errors
+      setResult([{strDrink: "No results found", strDrinkThumb: "https://www.thecocktaildb.com/images/ingredients/No%20results%20found.png"}])
+    } else {setResult(result)}
+    
+    console.log("setResult: ", result)
+  }
+
+  const setImgClick = (id) => { //This function is used to set the recipe state variable to the recipe of the clicked image (The function is passed down to the BrowsePane, then CardItem)
+    imgClick(id)
+    console.log("setImgClick: ", id)
+  }
+
+  return (
+    <div>
+      <Grid container spacing={4} justifyContent="center" className="App">
+        <Grid item xs={3}> {/*First Column*/}
+          <FunctionPane setResult={setJsonResult} />
+        </Grid>
+        <Grid item xs={5}> {/*Second Column*/}
+          <BrowsePane jsonArray={result} imgClick={setImgClick} />
+        </Grid>
+        <Grid item xs={4}> {/*Third Column*/}
+          <RecipePane recipe={recipe} />
+        </Grid>
+      </Grid>
+    </div>
+
+
+
+  );
+}
+
+export default App;
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ App.css ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.App {
+  text-align: center;
+  background-color: #f6f6e9;
+  color: #000000;
+  
+  padding: 64px;
+}
+
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ FunctionPane ~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+import { Button, TextField, Paper, createTheme, ThemeProvider } from '@mui/material';
+import React, { useState } from "react";
+import { ReactComponent as Logo } from './Undiluted - Cocktail Finder Logo.svg';
+
+
+
+function FunctionPane({ setResult }) {
+  // SEARCH API callTypes are 's' for search by name, 'i' for search by ingredient name, 'f' for cocktail by first letter
+  // 'filter' API callTypes are 'c' for category, 'g' for glass, 'i' for ingredient, 'a' for alcoholic/Non_alcoholic
+  const [value, setValue] = useState("");
+
+
+
+  const handleChange = e => {
+    setValue(e.target.value);
+  }
+
+  const theme = createTheme({
+    palette: {
+      primary: {
+        main: '#e5d798',//Brown # 7b3911, Cream # f6f6e9, Gold # e5d798
+
+      },
+      secondary: {
+        main: '#f6f6e9',
+      },
+
+    },
+  });
+
+  return (
+    <ThemeProvider theme={theme}>
+      <div>
+        <Paper elevation={2} className="FunctionPaper">
+          <Logo />
+          <p>
+            <TextField fullWidth id="SearchText" label="What will you be having?" variant='outlined' value={value} onChange={handleChange} />
+          </p>
+
+          {/*This is the button that is used to search for COCKTAILS by NAME */}
+          <p>
+            <Button variant='contained' size='large' color='primary' onClick={
+              () => {
+                (fetch(`https://www.thecocktaildb.com/api/json/v1/1/search.php?s=${value}`)
+                  .then(response => response.json())
+                  .then(response => {
+                    console.log(response);
+                    setResult(response.drinks);
+                  })
+                ).catch((e) => {
+                  console.error(`An error occurred: ${e}`)
+                });
+              }
+            }> Find cocktails by Name</Button>
+          </p>
+
+
+          <p> {/* //This is the button that is used to search for COCKTAILS by FIRST LETTER */}
+            <Button variant='contained' size='large' onClick={
+              () => {
+                (fetch(`https://www.thecocktaildb.com/api/json/v1/1/search.php?f=${value}`)
+                  .then(response => response.json())
+                  .then(response => {
+                    console.log(response);
+                    setResult(response.drinks);
+                  })
+                ).catch((e) => {
+                  console.error(`An error occurred: ${e}`)
+                });
+              }
+            }> Find cocktails by First Letter</Button>
+          </p>
+
+          <p> {/* //This is the button that is used to search for COCKTAILS by INGREDIENT */}
+            <Button variant='contained' size='large' onClick={
+              () => {
+                (fetch(`https://www.thecocktaildb.com/api/json/v1/1/filter.php?i=${value}`)
+                  .then(response => response.json())
+                  .then(response => {
+                    console.log(response);
+                    setResult(response.drinks);
+                  })
+                ).catch((e) => {
+                  console.error(`An error occurred: ${e}`)
+                });
+              }
+            }> Find cocktails by Ingredient</Button>
+          </p>
+
+          <p> {/* //This is the button that is used to search for All Alcoholic Cocktails */}
+            <Button variant='contained' size='large' onClick={
+              () => {
+                (fetch(`https://www.thecocktaildb.com/api/json/v1/1/random.php`)
+                  .then(response => response.json())
+                  .then(response => {
+                    console.log(response);
+                    setResult(response.drinks);
+                  })
+                ).catch((e) => {
+                  console.error(`An error occurred: ${e}`)
+                });
+              }
+            }> Find A Random Cocktail</Button>
+          </p>
+
+          <p> ~~~~~~~~ </p>
+        </Paper>
+      </div>
+    </ThemeProvider>
+
+
+
+  );
+}
+
+export default FunctionPane;
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ BrowsePane ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+import { Paper } from "@mui/material";
+import Grid2 from '@mui/material/Unstable_Grid2';
+import CardItem from './CardItem';
+import './BrowsePane.css';
+
+
+/*
+    This component is used to display the cards in the BrowsePane component.
+    It takes in a jsonArray object and an imgClick function as props.
+    The jsonArray object is a collection of JSON objects used to display the cards.
+    The imgClick function is used to pass a recipe JSON object to the RecipePane component from the CardItem Component.
+
+*/
+
+function BrowsePane({jsonArray, imgClick}) {
+  // console.log("AAAAAAAA",jsonArray)
+  return (
+    <div>
+      <Paper elevation={2}>
+
+        <Grid2 container spacing={2} className="BrowseCards" >
+          {
+            (jsonArray.map((item) => (
+              <Grid2 xs={4}><CardItem jsonItem={item} imgClick={imgClick} /></Grid2>
+            )))
+          }
+
+        </Grid2>
+      </Paper> 
+    </div>
+
+
+
+  );
+}
+
+export default BrowsePane;
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ BrowsePane.css ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.BrowseCards {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    margin: 0px;
+    padding: 5px;
+    width: 100%;
+}
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ CardItem ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+import React from "react";
+import { Paper } from "@mui/material";
+/*
+    This component is used to display the cards in the BrowsePane component.
+    It takes in a jsonItem object and an imgClick function as props.
+    The jsonItem is a single item, derived from JsonArray in BrowsePane. Its information is used to fill out the card.
+    The imgClick function is used to pass a recipe JSON object to the RecipePane component.
+
+*/
+const CardItem = ({ jsonItem, imgClick }) => {
+
+    return (
+        <Paper elevation={3}>
+            {<figure className="cards_item_pick-wrap" onClick={(e) => {
+
+                (fetch(`https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=${jsonItem.idDrink}`)
+                    .then(response => response.json())
+                    .then(response => {
+                        console.log(response);
+                        imgClick(response.drinks[0]);
+                    })
+                ).catch((e) => {
+                    console.error(`An error occurred: ${e}`)
+                });
+
+            }}>
+                <img src={jsonItem.strDrinkThumb} alt={jsonItem.strDrink} width="90%" />
+                <figcaption>{jsonItem.strDrink}</figcaption>
+            </figure>}
+            
+
+        </Paper>
+    );
+}
+
+export default CardItem;
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ RecipePane ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+import { Paper } from "@mui/material";
+import React, { useState } from "react";
+
+function RecipePane({ recipe }) { //Recipe Pane takes in recipe JSON and displays it
+  
+  return (
+    <div>
+      <Paper className="RecipePaper">
+        <figure>
+          <img src={recipe.strDrinkThumb} alt={recipe.strDrink} width="80%"/>
+          <figcaption><h1>{recipe.strDrink}</h1></figcaption>
+        </figure>
+        <p>{recipe.strInstructions}</p>
+        <h3>Ingredients</h3>
+        <p>{recipe.strMeasure1}  {recipe.strIngredient1}</p>
+        <p>{recipe.strMeasure2}  {recipe.strIngredient2}</p>
+        <p>{recipe.strMeasure3}  {recipe.strIngredient3}</p>
+        <p>{recipe.strMeasure4}  {recipe.strIngredient4}</p>
+        <p>{recipe.strMeasure5}  {recipe.strIngredient5}</p>
+        <p>{recipe.strMeasure6}  {recipe.strIngredient6}</p>
+        <p>{recipe.strMeasure7}  {recipe.strIngredient7}</p>
+        <p>{recipe.strMeasure8}  {recipe.strIngredient8}</p>
+        <p>{recipe.strMeasure9}  {recipe.strIngredient9}</p>
+        <p>{recipe.strMeasure10} {recipe.strIngredient10}</p>
+        <p>{recipe.strMeasure11}  {recipe.strIngredient11}</p>
+        <p>{recipe.strMeasure12}  {recipe.strIngredient12}</p>
+        <p>{recipe.strMeasure13}  {recipe.strIngredient13}</p>
+        <p>{recipe.strMeasure14}  {recipe.strIngredient14}</p>
+        <p>{recipe.strMeasure15}  {recipe.strIngredient15}</p>
+      </Paper>
+    </div>
+
+
+
+  );
+}
+
+export default RecipePane;
+
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ SetupTest.js ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+import App from './App';
+import '@testing-library/jest-dom';
+
+
+//write a test for app.js
+//test for the app's main searchbar
+describe('App', () => {
+  it('renders searchbar', () => {
+    render(<App />);
+    const search = screen.getByLabelText('What will you be having?');
+  });
+});
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ App.test.js ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+test('renders searchbar', () => {
+  render(<App />);
+  const search = screen.getByLabelText('What will you be having?');
+  expect(search).toBeInTheDocument();
+});
