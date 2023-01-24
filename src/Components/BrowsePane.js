@@ -6,17 +6,11 @@ function BrowsePane() {
     <div>
       <Paper>
         BrowsePane
-        {/* <Grid container spacing={3} justifyContent="center" className="BrowseCards">
-          <Grid item xs={4}>
+        <Grid container spacing={3} justifyContent="center" className="BrowseCards">
+          
             <CardItem />
-          </Grid>
-          <Grid item xs={4}>
-            <CardItem />
-          </Grid>
-          <Grid item xs={4}>
-            <CardItem />
-          </Grid>
-        </Grid> */}
+          
+        </Grid>
       </Paper>
     </div>
 
