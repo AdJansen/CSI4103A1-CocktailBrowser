@@ -1,7 +1,13 @@
 import { Button, TextField} from '@mui/material';
 import React, { useState } from "react";
+/*
 
-const SearchField = ({ id, label, callType, value, handleChange}) => { //DEPRECATED
+//DEPRECATED
+//DEPRECATED
+//DEPRECATED
+
+*/
+const SearchField = ({ id, label, callType, value, handleChange}) => { 
     
     
     const handleClick = () => { //HandleClick was written with help from ChatGPT, using the prompt "How do I make an HTTP GET request with a materialUI button in react?" as well as copycat.dev/blog/react-fetch
